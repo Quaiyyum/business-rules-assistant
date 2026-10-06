@@ -4,7 +4,6 @@ aiosignal==1.4.0
 altair==6.3.0
 annotated-doc==0.0.5
 annotated-types==0.8.0
-anthropic==1.11.0
 anyio==4.15.1
 attrs==26.1.0
 bcrypt==5.0.0
@@ -50,6 +49,7 @@ networkx==3.7
 numpy==2.5.3
 oauthlib==4.0.0
 onnxruntime==1.30.0
+openai==3.25.0
 opentelemetry-api==1.45.1
 opentelemetry-exporter-otlp-common==0.66b1
 opentelemetry-exporter-otlp-proto-common==1.45.1
