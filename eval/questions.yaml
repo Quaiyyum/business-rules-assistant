@@ -1,0 +1,136 @@
+# Evaluation questions. Written BEFORE any retrieval code exists, so the test
+# cannot be tuned to fit the system.
+#
+# type: rule      -> the answer should cite the rule in expect.rule_id
+# type: document  -> no rule covers it; the answer should cite expect.file + expect.page
+# type: none      -> not in the knowledge base; the system should say it cannot find it
+#
+# `key_fact` is what a correct answer must contain. Questions are phrased the way
+# workshop staff would ask, not in the wording of the rule.
+
+# ---------- Light vehicles ----------
+
+- id: Q01
+  domain: light_vehicle
+  type: rule
+  question: A customer wants 60 mm lift blocks under the rear leaf springs of his ute. Can we fit them without a cert?
+  expect:
+    rule_id: LVV_001
+  key_fact: No. Blocks over 50 mm are beyond the threshold, so LVV certification is needed.
+
+- id: Q02
+  domain: light_vehicle
+  type: rule
+  question: How much bigger than the factory tyres can we go before the vehicle needs LVV certification?
+  expect:
+    rule_id: LVV_002
+  key_fact: Diameter or rolling circumference no more than 5% greater than original.
+
+- id: Q03
+  domain: light_vehicle
+  type: rule
+  question: We're building a flat deck for a 2023 ute. It sticks out 150 mm past the cab on each side and the front corners are square. Is that OK without certification?
+  expect:
+    rule_id: LVV_006
+  key_fact: No. It must protrude no more than 100 mm, or have front edges tapered back at 30 degrees or more.
+
+- id: Q04
+  domain: light_vehicle
+  type: rule
+  question: My ute has an unladen weight of 2,000 kg. What's the heaviest trailer without brakes I should be towing?
+  expect:
+    rule_id: TOW_001
+  key_fact: About 1,500 kg laden (three quarters of the towing vehicle's unladen weight). This is NZTA guidance, not a legal limit.
+
+- id: Q05
+  domain: light_vehicle
+  type: rule
+  question: Does a trailer that weighs 2,400 kg loaded need its own brakes?
+  expect:
+    rule_id: TOW_004
+  key_fact: Yes. A service brake is required for 2001 to 2500 kg.
+
+- id: Q06
+  domain: light_vehicle
+  type: rule
+  question: I'm carrying a ladder that hangs 1.2 m out the back of the ute. Do I need to put anything on it?
+  expect:
+    rule_id: TOW_007
+  key_fact: Yes. Over 1 metre beyond the rear needs a warning device (flag or hazard panel by day, light at night).
+
+- id: Q07
+  domain: light_vehicle
+  type: document
+  question: How dark can the tint be on the front side windows?
+  expect:
+    file: nzta_virm_nlv_allowable_modifications.pdf
+    page: 5
+  key_fact: Overall visible light transmittance must not be reduced below 35%.
+
+- id: Q08
+  domain: light_vehicle
+  type: document
+  question: Can we fit a bull bar to a new ute without getting it certified?
+  expect:
+    file: nzta_virm_nlv_allowable_modifications.pdf
+    page: 2
+  key_fact: Yes, if the bar is frontal impact compliant, displays a FIC tag, and fitting does not weaken the structure.
+
+- id: Q09
+  domain: light_vehicle
+  type: document
+  question: When a trailer is hooked up, what is the maximum distance allowed between the back of the towing vehicle and the trailer?
+  expect:
+    file: nzta_safe_loading_towing_light.pdf
+    page: 7
+  key_fact: The gap between the vehicle and the trailer must be no more than four metres.
+
+- id: Q10
+  domain: light_vehicle
+  type: none
+  question: What is the braked towing capacity of a 2022 Toyota Hilux?
+  expect: {}
+  key_fact: Not in the knowledge base. The system should say so and not guess a figure.
+
+# ---------- Heavy vehicles ----------
+
+- id: Q11
+  domain: heavy_vehicle
+  type: rule
+  question: We've got an 8-tonne crate that can't sit up against the headboard. How strong do the lashings need to be in total?
+  expect:
+    rule_id: LOAD_005
+  key_fact: 16 tonnes total (twice the weight of the load).
+
+- id: Q12
+  domain: heavy_vehicle
+  type: rule
+  question: We want to stretch a Canter with stability control from its standard 2800 mm wheelbase to 3400 mm. Is that allowed, and how exact does the new wheelbase have to be?
+  expect:
+    rule_id: FUSO_001
+  key_fact: Only if 3400 mm is listed as a permissible wheelbase for that exact model, and the actual wheelbase must be within 10 mm of it.
+
+- id: Q13
+  domain: heavy_vehicle
+  type: rule
+  question: We're fitting a tipping body to a truck. What has to happen with the chassis rating?
+  expect:
+    rule_id: HV_002
+  key_fact: Either a new chassis rating is issued and a new certificate of loading obtained, or the current chassis rating is confirmed as valid.
+
+- id: Q14
+  domain: heavy_vehicle
+  type: rule
+  question: Which category of heavy vehicle specialist certifier has to certify a modification that affects a truck's brakes?
+  expect:
+    rule_id: HV_003
+  key_fact: The brake (HVEK) category. No other category of heavy vehicle specialist certifier can certify heavy vehicle brakes.
+
+- id: Q15
+  domain: heavy_vehicle
+  type: document
+  question: How far apart should the webbing straps be along a load?
+  expect:
+    file: nzta_truck_loading_code_2026.pdf
+    page: 15
+  key_fact: At least one lashing every 1.5 metres along the load. The answer must cite this page; the figure without the citation is a fail.
