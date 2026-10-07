@@ -3,3 +3,6 @@ chroma_store/
 .env
 .venv/
 __pycache__/
+docs/candidates/
+.DS_Store
+.idea/

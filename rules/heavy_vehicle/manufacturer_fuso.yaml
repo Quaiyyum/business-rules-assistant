@@ -1,0 +1,99 @@
+# Heavy vehicles: FUSO New Zealand manufacturer compliance statements.
+# These rules are model-specific. Identify the factory or local model code first,
+# then read the permitted values from that model's row in the cited table.
+
+- id: FUSO_001
+  vehicle_class: heavy
+  manufacturer: FUSO
+  topic: canter_esc_wheelbase
+  rule_type: manufacturer_compliance
+  rule: >
+    For FUSO Canter Euro 5 models fitted with Electronic Stability Control (ESC), a
+    wheelbase adjustment keeps the specified brake standard only when the new
+    wheelbase is one listed as permissible for that model, and the actual wheelbase
+    must be within 10 mm of the specified wheelbase. Vehicles subject to a wheelbase
+    adjustment must have authorised FUSO dealer documentation confirming the ECU has
+    been reprogrammed before an LT400 is issued.
+  source:
+    document: Brake Compliance Guidelines, Canter Euro 5 (+ ESC), April 2024
+    file: fuso_canter_brake_wheelbase_compliance.pdf
+    page: 1
+    section: Statement and permissible wheelbase table
+  candidate_rows: [FUSO_001]
+  last_reviewed: "2026-10-07"
+
+- id: FUSO_005
+  vehicle_class: heavy
+  manufacturer: FUSO
+  topic: canter_non_esc_wheelbase
+  rule_type: manufacturer_compliance
+  rule: >
+    For FUSO Canter Euro 5 models not fitted with ESC, the truck continues to meet the
+    specified brake standard only within the wheelbase modification range given for
+    its factory or local model code. The range is model-specific (the table lists
+    2500 to 3850 mm, 2800 to 3850 mm or 2800 to 4750 mm depending on the model), so
+    it must be read from the applicable row.
+  source:
+    document: Brake Compliance Guidelines, Canter Euro 5 (non ESC), April 2024
+    file: fuso_canter_brake_wheelbase_compliance.pdf
+    page: 2
+    section: Wheelbase modification range table
+  candidate_rows: [FUSO_005]
+  last_reviewed: "2026-10-07"
+
+- id: FUSO_002
+  vehicle_class: heavy
+  manufacturer: FUSO
+  topic: fighter_euro6_wheelbase
+  rule_type: manufacturer_compliance
+  rule: >
+    For FUSO Fighter Euro 6 models fitted with ESC, a wheelbase adjustment keeps the
+    specified brake standard only when it is to a wheelbase listed as permissible for
+    that model. Vehicles subject to a wheelbase adjustment must have authorised FUSO
+    dealer documentation confirming the CGW (Central Gateway) ECU has been
+    reprogrammed before an LT400 is issued.
+  source:
+    document: Brake and Wheelbase Compliance Information, FUSO Fighter Euro 6 with ESC, June 2026
+    file: fuso_fighter_euro6_wheelbase_range.pdf
+    page: 1
+    section: Statement and permissible wheelbase table
+  related: [FUSO_003]
+  candidate_rows: [FUSO_002]
+  last_reviewed: "2026-10-07"
+
+- id: FUSO_003
+  vehicle_class: heavy
+  manufacturer: FUSO
+  topic: fighter_euro6_yaw_sensor
+  rule_type: manufacturer_compliance
+  rule: >
+    On FUSO Fighter Euro 6 models fitted with ESC, the yaw sensor on the inner chassis
+    rail must remain in its original position and orientation when the wheelbase is
+    adjusted.
+  source:
+    document: Brake and Wheelbase Compliance Information, FUSO Fighter Euro 6 with ESC, June 2026
+    file: fuso_fighter_euro6_wheelbase_range.pdf
+    page: 1
+    section: Important notes
+  related: [FUSO_002]
+  candidate_rows: [FUSO_003]
+  last_reviewed: "2026-10-07"
+
+- id: FUSO_004
+  vehicle_class: heavy
+  manufacturer: FUSO
+  topic: fighter_euro5_wheelbase
+  rule_type: manufacturer_compliance
+  rule: >
+    For FUSO Fighter Euro 5 models, the truck continues to meet the specified brake
+    standard only within the wheelbase modification range and tyre size given for its
+    factory or local model code. The range is model-specific (the table lists
+    4270 to 5540 mm, 4280 to 6500 mm or 4300 to 6530 mm depending on the model
+    series), so it must be read from the applicable row.
+  source:
+    document: Fighter Euro 5 Brake and Wheelbase Statement of Compliance, January 2022
+    file: fuso_fighter_euro5_brake_wheelbase_compliance.pdf
+    page: 1
+    section: Wheelbase and tyre size table
+  candidate_rows: [FUSO_004]
+  last_reviewed: "2026-10-07"

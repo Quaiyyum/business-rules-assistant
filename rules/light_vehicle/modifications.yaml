@@ -1,0 +1,128 @@
+# Light vehicles: modifications and when LVV certification is needed.
+# Source: LVVTA "LVV Certification Threshold Schedule", Issue #6, May 2020.
+# Each rule states the conditions under which LVV certification is NOT required;
+# beyond the threshold, refer to an LVV certifier.
+
+- id: LVV_001
+  vehicle_class: light
+  authority: LVVTA
+  topic: leaf_spring_blocks
+  rule_type: certification_threshold
+  rule: >
+    Blocks for leaf springs, used to raise or lower ride height, do not require LVV
+    certification provided the leaf spring suspension has not been raised by any other
+    means and the blocks are securely fitted, constructed from metal, designed for the
+    purpose, firmly seated over not less than the OE seat area, not more than 50 mm
+    in height, and located using the same method as original.
+  source:
+    document: LVV Certification Threshold Schedule, Issue 6
+    file: lvvta_certification_threshold_schedule.pdf
+    page: 16
+    section: Blocks for leaf springs
+  candidate_rows: [LVV_001]
+  last_reviewed: "2026-10-07"
+
+- id: LVV_002
+  vehicle_class: light
+  authority: LVVTA
+  topic: tyre_size_change
+  rule_type: certification_threshold
+  rule: >
+    A tyre size change does not require LVV certification provided the tyres have a
+    diameter or outer rolling circumference not more than 5% greater than OE, are an
+    appropriate selection for the rim width, and have load and speed ratings suitable
+    for the vehicle; and the tyre tread does not protrude beyond the unmodified
+    original body panels or factory-fitted mudguard extension (for class NA or MC
+    vehicles, no more than 25 mm outside the original body panels, with a mudguard
+    extension covering the full tread width).
+  source:
+    document: LVV Certification Threshold Schedule, Issue 6
+    file: lvvta_certification_threshold_schedule.pdf
+    page: 17
+    section: 10-1 Tyres and Wheels, Tyre size changes
+  candidate_rows: [LVV_002]
+  last_reviewed: "2026-10-07"
+
+- id: LVV_003
+  vehicle_class: light
+  authority: LVVTA
+  topic: ute_tray_structure
+  rule_type: certification_threshold
+  rule: >
+    For the vehicle structure, a ute tray or deck on a vehicle registered in New
+    Zealand on or after 1 January 2021 does not require LVV certification provided the
+    fitting has not weakened the vehicle structure and the tray or deck has no sharp
+    protrusions (edges have a radius of at least 3 mm). For vehicles first registered
+    before 1 January 2021, in-service requirements for condition and performance must
+    be met. The external-projection conditions in LVV_006 also apply.
+  source:
+    document: LVV Certification Threshold Schedule, Issue 6
+    file: lvvta_certification_threshold_schedule.pdf
+    page: 6
+    section: 3-1 Structure, Ute trays and decks
+  related: [LVV_006]
+  candidate_rows: [LVV_003]
+  last_reviewed: "2026-10-07"
+
+- id: LVV_004
+  vehicle_class: light
+  authority: LVVTA
+  topic: body_kits_and_canopies_projections
+  rule_type: certification_threshold
+  rule: >
+    Body kits and components, including utility canopies, plastic bumper skins and
+    bonnet projections, do not require LVV certification provided the fitting system
+    does not weaken the vehicle structure; no frontal impact components have been
+    removed where the vehicle must comply with a frontal impact occupant protection
+    standard; the components do not present forward-facing external projections that
+    could cause injury or a snagging or hooking risk; the driver's vision is not
+    affected; and the performance of any lamp is not affected.
+  source:
+    document: LVV Certification Threshold Schedule, Issue 6
+    file: lvvta_certification_threshold_schedule.pdf
+    page: 2
+    section: 2-1 External Projections, Body kits and components
+  related: [LVV_005]
+  candidate_rows: [LVV_004]
+  last_reviewed: "2026-10-07"
+
+- id: LVV_005
+  vehicle_class: light
+  authority: LVVTA
+  topic: structure_modifications
+  rule_type: certification_threshold
+  rule: >
+    LVV certification is always required for structure-related modifications unless
+    the modification is specifically listed in the schedule. Fitting, removing or
+    modifying body kits and components, including utility canopies, is exempt only
+    where it does not weaken the vehicle structure.
+  source:
+    document: LVV Certification Threshold Schedule, Issue 6
+    file: lvvta_certification_threshold_schedule.pdf
+    page: 5
+    section: 3-1 Structure
+  related: [LVV_004]
+  candidate_rows: [LVV_005]
+  last_reviewed: "2026-10-07"
+
+- id: LVV_006
+  vehicle_class: light
+  authority: LVVTA
+  topic: ute_tray_projections
+  rule_type: certification_threshold
+  rule: >
+    For external projections, a ute tray or deck on a vehicle first registered in New
+    Zealand on or after 1 January 2021 does not require LVV certification provided it
+    has no sharp protrusions (edges have a radius of at least 3 mm), no forward-facing
+    pedestrian traps exist, and the tray or deck either protrudes no more than 100 mm
+    from the widest part of the vehicle cab or body structure (excluding mirrors), or
+    has forward edges tapered rearwards at an angle of not less than 30 degrees from
+    its front edge, or has an equivalent or better form of pedestrian protection.
+  source:
+    document: LVV Certification Threshold Schedule, Issue 6
+    file: lvvta_certification_threshold_schedule.pdf
+    page: 3
+    section: 2-1 External Projections, Ute trays or decks
+  related: [LVV_003]
+  candidate_rows: []
+  last_reviewed: "2026-10-07"

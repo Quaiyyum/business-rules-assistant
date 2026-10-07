@@ -1,0 +1,116 @@
+# Heavy vehicles: load restraint.
+# Source: NZTA "The official New Zealand truck loading code", edition published 2026.
+# Printed page numbers match PDF page numbers in this document.
+
+- id: LOAD_001
+  vehicle_class: heavy
+  authority: NZTA
+  topic: load_restraint_forces
+  rule_type: code_of_practice
+  rule: >
+    A heavy vehicle load restraint system must stop the load moving under four
+    conditions: braking forwards, it must hold at least the full weight of the load
+    (1.0 g); braking backwards, at least half the weight of the load (0.5 g);
+    cornering, at least half the weight of the load sideways (0.5 g); and on bumpy
+    roads, it must hold the load down with at least one-fifth of its weight (0.2 g).
+  source:
+    document: The official New Zealand truck loading code (2026)
+    file: nzta_truck_loading_code_2026.pdf
+    page: 2
+    also_at_pages: [5, 9]
+    section: Legislation; Methods of load restraint
+  candidate_rows: [LOAD_001, LOAD_002, LOAD_003, LOAD_004]
+  last_reviewed: "2026-10-07"
+
+- id: LOAD_005
+  vehicle_class: heavy
+  authority: NZTA
+  topic: lashing_strength_rigid_loads
+  rule_type: code_of_practice
+  rule: >
+    For rigid loads of 0.5 tonnes or more (solid items such as bundles, boxes or
+    crates), the total lashing strength required depends on headboard support. If the
+    load is not against a headboard, the lashings must have a total strength of twice
+    the weight of the load. If the load is against a headboard and the top of the load
+    is supported by at least 150 mm, total strength equal to the weight of the load.
+    If only the bottom part of the load is supported by the headboard, 1.5 times the
+    weight of the load. Lashings must run from one side of the deck, over the load, to
+    an anchor point on the other side.
+  source:
+    document: The official New Zealand truck loading code (2026)
+    file: nzta_truck_loading_code_2026.pdf
+    page: 5
+    section: Securing rigid loads (0.5 tonnes or more)
+  candidate_rows: [LOAD_005]
+  last_reviewed: "2026-10-07"
+
+- id: LOAD_006
+  vehicle_class: heavy
+  authority: NZTA
+  topic: anchor_point_strength
+  rule_type: code_of_practice
+  rule: >
+    Each load anchor point must have a strength at least as strong as the rated
+    strength of the lashing attached to it.
+  source:
+    document: The official New Zealand truck loading code (2026)
+    file: nzta_truck_loading_code_2026.pdf
+    page: 10
+    section: Anchor points
+  related: [LOAD_007]
+  candidate_rows: [LOAD_006]
+  last_reviewed: "2026-10-07"
+
+- id: LOAD_007
+  vehicle_class: heavy
+  authority: NZTA
+  topic: anchor_point_modifications
+  rule_type: code_of_practice
+  rule: >
+    Any modification to a vehicle to add load anchor points must not weaken the
+    chassis. For example, holes must not be drilled in frame flanges, and welding must
+    not be done, without manufacturer approval.
+  source:
+    document: The official New Zealand truck loading code (2026)
+    file: nzta_truck_loading_code_2026.pdf
+    page: 10
+    section: Anchor points
+  related: [LOAD_006]
+  candidate_rows: [LOAD_007]
+  last_reviewed: "2026-10-07"
+
+- id: LOAD_008
+  vehicle_class: heavy
+  authority: NZTA
+  topic: load_checks_during_trip
+  rule_type: guidance
+  rule: >
+    A heavy vehicle load should be checked before starting the trip, after 25 km and
+    at regular intervals (such as during tyre checks), every time items are removed
+    from or added to the load, and after emergency braking or sharp manoeuvres. The
+    vehicle should not be moved if any part of the load is not secured.
+  source:
+    document: The official New Zealand truck loading code (2026)
+    file: nzta_truck_loading_code_2026.pdf
+    page: 3
+    section: Tips for safe loading
+  candidate_rows: [LOAD_008]
+  last_reviewed: "2026-10-07"
+
+- id: LOAD_009
+  vehicle_class: heavy
+  authority: NZTA
+  topic: headboard_strength
+  rule_type: code_of_practice
+  rule: >
+    A loading rack or headboard must be able to withstand a horizontal force equal to
+    half the vehicle's rated payload. It should be at least as wide as the cab or deck
+    and at least 0.5 m high, or high enough to stop forward movement. Without a
+    loading rack or headboard, twice the strength of lashings is needed.
+  source:
+    document: The official New Zealand truck loading code (2026)
+    file: nzta_truck_loading_code_2026.pdf
+    page: 10
+    section: Loading racks and headboards
+  candidate_rows: [LOAD_009]
+  last_reviewed: "2026-10-07"

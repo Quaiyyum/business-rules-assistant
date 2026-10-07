@@ -1,0 +1,67 @@
+# Heavy vehicles: when a modification needs specialist certification.
+# Source: NZTA VIRM "Heavy vehicle specialist certification", PDF export stamped
+# "Correct as at 7 October 2026". The export has no printed page numbers and its pages
+# will shift when NZTA amends the manual, so `source.section` is the durable reference.
+
+- id: HV_001
+  vehicle_class: heavy
+  authority: NZTA
+  topic: chassis_modification_rating
+  rule_type: legal_requirement
+  rule: >
+    If a heavy vehicle is modified by the addition, removal or relocation of an axle
+    and suspension system, by the replacement of an axle or suspension system with a
+    different type, or by the modification of its chassis, then either a new chassis
+    rating must be issued and a new certificate of loading obtained, or the current
+    chassis rating must be confirmed as being valid.
+  source:
+    document: "VIRM: Heavy vehicle specialist certification"
+    file: nzta_virm_hvsc.pdf
+    page: 66
+    also_at_pages: [68]
+    section: Modification affecting chassis (section 6.4), item 25; repeated as item 37(a)
+  related: [HV_002]
+  candidate_rows: [HV_001]
+  last_reviewed: "2026-10-07"
+
+- id: HV_002
+  vehicle_class: heavy
+  authority: NZTA
+  topic: special_equipment_chassis_rating
+  rule_type: legal_requirement
+  rule: >
+    If a heavy vehicle is modified by fitting a hoist, crane, logging bolster, tipping
+    body or other special equipment that may increase stress in a localised area of
+    the chassis or significantly redistribute the load over the chassis, then either a
+    new chassis rating must be issued and a new certificate of loading obtained, or
+    the current chassis rating must be confirmed as being valid.
+  source:
+    document: "VIRM: Heavy vehicle specialist certification"
+    file: nzta_virm_hvsc.pdf
+    page: 67
+    also_at_pages: [68]
+    section: Modification affecting chassis (section 6.4), item 26; repeated as item 37(b)
+  related: [HV_001]
+  candidate_rows: [HV_002]
+  last_reviewed: "2026-10-07"
+
+- id: HV_003
+  vehicle_class: heavy
+  authority: NZTA
+  topic: brake_modification_certification
+  rule_type: legal_requirement
+  rule: >
+    All heavy vehicle brake modifications, whether direct or indirect, must continue
+    to meet the Land Transport Rule: Heavy Vehicle Brakes 2006 and, except those
+    specifically provided for in that rule, must be certified by a heavy vehicle
+    specialist certifier with the brake (HVEK) category. No other category of
+    certifier can certify heavy vehicle brakes. Where a modification requires brake
+    certification, an HVEK LT400 must be issued before certification of the finished
+    project.
+  source:
+    document: "VIRM: Heavy vehicle specialist certification"
+    file: nzta_virm_hvsc.pdf
+    page: 234
+    section: "Technical bulletin 4: Heavy vehicle alterations and modifications that may affect the brakes"
+  candidate_rows: [HV_003]
+  last_reviewed: "2026-10-07"
