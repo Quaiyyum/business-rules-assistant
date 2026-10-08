@@ -156,4 +156,6 @@ This is a working first version. The light and heavy vehicle domains, the local 
 | Re-run the full LLM evaluation | The revised prompt has only been partly tested because of free-tier API limits (Q06, Q09 and Q12 are pending) |
 | Local LLM fallback (Ollama) | So the app can write answers with no API key or quota |
 | Short demo video | A walkthrough of the rule-edit demo |
+| Bring-your-own-documents mode (v2) | Let any team use the same app: create a workspace, upload their own PDFs (and optional rules), and build the index with one button, with no command line |
+| Choose your own LLM (v2) | A settings panel to pick OpenAI, Anthropic, Gemini or a local Ollama model, paste an API key (kept in the session only, never saved) and test the connection. Providers sit behind one small preset table, so adding one is a single entry. "No LLM" stays the default |
 | A new domain: housing | Same pipeline, new documents and rules; it will be added once it is fully built and evaluated, to test how little code a new domain needs |
