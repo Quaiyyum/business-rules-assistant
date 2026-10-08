@@ -146,3 +146,14 @@ python src/run_eval.py        # the evaluation report
 - **Rules:** the 25 rules in `rules/` were written for this project from those documents. Candidate sentences were shortlisted by script, reviewed by hand, and written as rules with an AI assistant's help; each was checked against its cited page. They are an interpretation for demonstration, not an official restatement.
 - **Corrections:** entries in `corrections/corrections.yaml` were written during testing.
 - **No private or company data** is used. With the optional LLM switched on, the question and the retrieved public text are sent to the configured provider.
+
+## 10. Status and roadmap
+
+This is a working first version. The light and heavy vehicle domains, the local retrieval path, staff corrections and the evaluation are complete.
+
+| Next | Why |
+|---|---|
+| Re-run the full LLM evaluation | The revised prompt has only been partly tested because of free-tier API limits (Q06, Q09 and Q12 are pending) |
+| Local LLM fallback (Ollama) | So the app can write answers with no API key or quota |
+| Short demo video | A walkthrough of the rule-edit demo |
+| A new domain: housing | Same pipeline, new documents and rules; it will be added once it is fully built and evaluated, to test how little code a new domain needs |
