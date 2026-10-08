@@ -21,6 +21,7 @@ import os
 import re
 import sys
 from collections import Counter
+from functools import lru_cache
 from pathlib import Path
 
 import yaml
@@ -164,12 +165,38 @@ def pdf_records(pdf_path: Path, domain: str) -> list[tuple[str, str, dict]]:
 
 # ---------------------------------------------------------------- store
 
-def open_collections():
-    """Open (or create) the two collections with a local embedding model."""
-    import chromadb
+def use_cached_model_offline() -> None:
+    """If the embedding model is already downloaded, stop the library phoning home.
+
+    By default every run asks the Hugging Face Hub whether the model has changed,
+    which prints an "unauthenticated requests" warning and needs a connection.
+    Once the model is in the local cache we switch to offline mode, so the
+    assistant runs with no network at all. This must happen before the
+    libraries are imported, because they read the setting at import time.
+    """
+    repo = EMBEDDING_MODEL if "/" in EMBEDDING_MODEL else f"sentence-transformers/{EMBEDDING_MODEL}"
+    hf_home = Path(os.getenv("HF_HOME", Path.home() / ".cache" / "huggingface"))
+    if (hf_home / "hub" / f"models--{repo.replace('/', '--')}").exists():
+        os.environ.setdefault("HF_HUB_OFFLINE", "1")
+
+
+@lru_cache(maxsize=1)
+def get_embedder():
+    """Load the local embedding model once and reuse it.
+
+    Calling the returned function with a list of texts gives one vector per text.
+    """
+    use_cached_model_offline()
     from chromadb.utils import embedding_functions
 
-    embed = embedding_functions.SentenceTransformerEmbeddingFunction(model_name=EMBEDDING_MODEL)
+    return embedding_functions.SentenceTransformerEmbeddingFunction(model_name=EMBEDDING_MODEL)
+
+
+def open_collections():
+    """Open (or create) the two collections with a local embedding model."""
+    embed = get_embedder()
+    import chromadb
+
     client = chromadb.PersistentClient(path=str(CHROMA_DIR))
     settings = {"hnsw": {"space": "cosine"}}
     return (
