@@ -41,6 +41,7 @@ How to answer:
 - Lead with the direct answer: yes, no, the figure, or the condition that decides it. Then one or two sentences of explanation.
 - Cite every source you rely on in square brackets, exactly as its label is written, for example [LVV_001] or [nzta_truck_loading_code_2026.pdf p.15].
 - Sometimes a source applies but cannot settle the question alone: it may say the answer depends on a model-specific table, or on a detail the question does not give. In that case give the conditional answer. State what the source requires and what the person needs to check. That is more useful than refusing.
+- A source labelled as a staff correction was written by staff after an earlier answer to a similar question was wrong. Prefer it where it conflicts with another source, and cite it like any other source.
 - A rule's type is shown beside its label. If the type is guidance, say it is a recommendation and not a legal limit. Do not call anything a legal requirement or a recommendation unless its type or its own wording says so.
 - If none of the sources is about what was asked, reply exactly: {NOT_FOUND}
   This includes a question about one specific vehicle's rating or specification when the sources only give general rules. Do not offer a general rule in place of the specific fact that was asked for."""
@@ -60,6 +61,8 @@ def _label(result) -> str:
     m = result.metadata
     if result.kind == "rule":
         return m["rule_id"]
+    if result.kind == "correction":
+        return f"correction {m['correction_id']}"
     return f"{m['source_file']} p.{m['source_page']}"
 
 
@@ -69,6 +72,8 @@ def build_context(results) -> str:
         note = ""
         if result.kind == "rule":
             note = f" (rule, type: {result.metadata['rule_type'].replace('_', ' ')})"
+        elif result.kind == "correction":
+            note = f" (staff correction, {result.metadata['date']})"
         blocks.append(f"[{_label(result)}]{note}\n{result.text}")
     return "\n\n".join(blocks)
 

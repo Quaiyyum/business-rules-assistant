@@ -1,8 +1,9 @@
 """Load the knowledge base into Chroma.
 
-Two collections are built:
-    rules  one chunk per hand-written rule (never split)
-    docs   the source PDFs, page by page, in overlapping chunks
+Three collections are built:
+    rules        one chunk per hand-written rule (never split)
+    docs         the source PDFs, page by page, in overlapping chunks
+    corrections  staff corrections from corrections/corrections.yaml (status: corrected)
 
 Every chunk carries its domain, so the same code serves any domain folder:
 
@@ -27,6 +28,7 @@ from pathlib import Path
 import yaml
 from pypdf import PdfReader
 
+from corrections import load_corrections
 from fetch_docs import SOURCES
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -193,7 +195,7 @@ def get_embedder():
 
 
 def open_collections():
-    """Open (or create) the two collections with a local embedding model."""
+    """Open (or create) the three collections with a local embedding model."""
     embed = get_embedder()
     import chromadb
 
@@ -202,6 +204,7 @@ def open_collections():
     return (
         client.get_or_create_collection("rules", embedding_function=embed, configuration=settings),
         client.get_or_create_collection("docs", embedding_function=embed, configuration=settings),
+        client.get_or_create_collection("corrections", embedding_function=embed, configuration=settings),
     )
 
 
@@ -213,7 +216,33 @@ def replace_domain(collection, domain: str, records: list[tuple[str, str, dict]]
         collection.add(ids=list(ids), documents=list(texts), metadatas=list(metadatas))
 
 
-def ingest(domain: str, rules_collection, docs_collection) -> None:
+def ingest_corrections(domain: str, corrections_collection) -> int:
+    """Index staff corrections for this domain.
+
+    The vector is computed from the corrected QUESTION, because a correction should
+    be found when someone asks the same thing again; the stored text is the answer.
+    """
+    corrections_collection.delete(where={"domain": domain})
+    entries = load_corrections(domain, status="corrected")
+    if entries:
+        questions = [e["question"] for e in entries]
+        corrections_collection.add(
+            ids=[e["id"] for e in entries],
+            documents=[e["answer"] for e in entries],
+            embeddings=get_embedder()(questions),
+            metadatas=[{
+                "type": "correction",
+                "domain": domain,
+                "correction_id": e["id"],
+                "date": str(e["date"]),
+                "question": e["question"],
+                "cited_source": e.get("cited_source", ""),
+            } for e in entries],
+        )
+    return len(entries)
+
+
+def ingest(domain: str, rules_collection, docs_collection, corrections_collection) -> None:
     rules = load_rules(domain)
     replace_domain(rules_collection, domain, [rule_record(r, domain) for r in rules])
 
@@ -228,7 +257,9 @@ def ingest(domain: str, rules_collection, docs_collection) -> None:
         doc_records.extend(pdf_records(pdf_path, domain))
         files += 1
     replace_domain(docs_collection, domain, doc_records)
-    print(f"{domain}: {len(rules)} rules, {len(doc_records)} document chunks from {files} PDFs")
+    corrections = ingest_corrections(domain, corrections_collection)
+    print(f"{domain}: {len(rules)} rules, {len(doc_records)} document chunks from {files} PDFs, "
+          f"{corrections} staff corrections")
 
 
 def main() -> int:
@@ -237,11 +268,11 @@ def main() -> int:
     parser.add_argument("--domain", default="all", choices=domains + ["all"])
     args = parser.parse_args()
 
-    rules_collection, docs_collection = open_collections()
+    rules_collection, docs_collection, corrections_collection = open_collections()
     for domain in (domains if args.domain == "all" else [args.domain]):
-        ingest(domain, rules_collection, docs_collection)
-    print(f"\nStore now holds {rules_collection.count()} rules and "
-          f"{docs_collection.count()} document chunks in {CHROMA_DIR}")
+        ingest(domain, rules_collection, docs_collection, corrections_collection)
+    print(f"\nStore now holds {rules_collection.count()} rules, {docs_collection.count()} "
+          f"document chunks and {corrections_collection.count()} corrections in {CHROMA_DIR}")
     return 0
 
 

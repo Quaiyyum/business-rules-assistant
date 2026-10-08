@@ -34,6 +34,8 @@ from ingest import get_embedder, open_collections
 TOP_K = 3              # results returned
 CANDIDATES = 5         # matches fetched from each collection before ranking
 RULE_BOOST = 0.10      # added to a rule's similarity when ranking
+CORRECTION_MIN_SIMILARITY = 0.80  # a staff correction is used only for nearly the same question
+CORRECTION_BOOST = 0.30           # and then it is ranked above everything else
 MIN_SENTENCE_CHARS = 25  # ignore fragments shorter than this when choosing a quote
 SECOND_QUOTE_MARGIN = 0.05  # also quote the runner-up sentence if it scores this close
 MIN_SIMILARITY = 0.30  # below this (before any boost), treat as "not found"
@@ -43,8 +45,8 @@ NOT_FOUND = "Not found in the knowledge base."
 
 @dataclass
 class Result:
-    id: str            # rule id, or "<file>:p<page>:c<chunk number>" for a document chunk
-    kind: str          # "rule" or "doc"
+    id: str            # rule id, correction id, or "<file>:p<page>:c<chunk number>"
+    kind: str          # "rule", "doc" or "correction"
     text: str
     similarity: float  # 0 to 1, higher is closer in meaning
     score: float       # similarity plus the rule boost; used for ranking
@@ -56,13 +58,19 @@ class Result:
         m = self.metadata
         if self.kind == "rule":
             return f"{m['rule_id']} ({m['source_document']}, p.{m['source_page']})"
+        if self.kind == "correction":
+            return f"Staff correction {m['correction_id']} ({m['date']})"
         return f"{m['source_file']}, p.{m['source_page']}"
 
     @property
     def source_key(self) -> str:
         """Short machine-readable source, used by the eval: a rule id or file:page."""
         m = self.metadata
-        return m["rule_id"] if self.kind == "rule" else f"{m['source_file']}:{m['source_page']}"
+        if self.kind == "rule":
+            return m["rule_id"]
+        if self.kind == "correction":
+            return f"correction:{m['correction_id']}"
+        return f"{m['source_file']}:{m['source_page']}"
 
 
 def _query(collection, kind: str, question: str, domain: str | None) -> list[Result]:
@@ -76,7 +84,7 @@ def _query(collection, kind: str, question: str, domain: str | None) -> list[Res
         found["ids"][0], found["documents"][0], found["metadatas"][0], found["distances"][0]
     ):
         similarity = 1 - distance
-        boost = RULE_BOOST if kind == "rule" else 0.0
+        boost = {"rule": RULE_BOOST, "correction": CORRECTION_BOOST}.get(kind, 0.0)
         results.append(Result(id_, kind, text, similarity, similarity + boost, metadata))
     return results
 
@@ -141,12 +149,20 @@ def best_quote(question: str, passage: str) -> str:
     return " ... ".join(sentences[i] for i in sorted(chosen))
 
 
-def retrieve(question: str, domain: str | None = None, collections=None) -> list[Result]:
-    """Return up to TOP_K results, best first. An empty list means "not found"."""
-    rules_collection, docs_collection = collections or open_collections()
+def retrieve(question: str, domain: str | None = None, collections=None,
+             use_corrections: bool = True) -> list[Result]:
+    """Return up to TOP_K results, best first. An empty list means "not found".
+
+    A staff correction is included only when the new question is nearly the same
+    as the corrected one (CORRECTION_MIN_SIMILARITY); it is then ranked first.
+    """
+    rules_collection, docs_collection, corrections_collection = collections or open_collections()
     results = _query(rules_collection, "rule", question, domain)
     results += _query(docs_collection, "doc", question, domain)
     results = [r for r in results if r.similarity >= MIN_SIMILARITY]
+    if use_corrections and corrections_collection.count():
+        results += [r for r in _query(corrections_collection, "correction", question, domain)
+                    if r.similarity >= CORRECTION_MIN_SIMILARITY]
     results = sorted(results, key=lambda r: r.score, reverse=True)[:TOP_K]
     for result in results:
         if result.kind == "doc":   # rules are never chunked, so only documents need this
@@ -164,7 +180,10 @@ def basic_answer(results: list[Result], show_context: bool = False) -> str:
     if not results:
         return NOT_FOUND
     best, others = results[0], results[1:]
-    if best.kind == "rule":
+    if best.kind == "correction":
+        lines = [f"Staff correction: {best.text}", f"Source: {best.citation}",
+                 f"(Given for the question: \"{best.metadata['question']}\")"]
+    elif best.kind == "rule":
         lines = [f"Rule: {best.text}", f"Source: {best.citation}",
                  f"Type: {best.metadata['rule_type'].replace('_', ' ')}"]
     else:

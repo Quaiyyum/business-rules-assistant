@@ -3,7 +3,8 @@
     streamlit run src/app.py
 
 Ask a question, get an answer with its citation, and see the sources it came
-from. Works with no API key (quoted answers from local search). If an LLM is set
+from. Under each answer, staff can mark it correct, or wrong and type the right
+answer; both are saved to corrections/corrections.yaml. Works with no API key (quoted answers from local search). If an LLM is set
 up in .env, a toggle lets it word the answer, falling back to the quoted answer
 if the LLM is unavailable.
 """
@@ -15,6 +16,7 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # so the sibling modules import
 
+from corrections import append_correction  # noqa: E402
 from ingest import RULES_DIR, open_collections  # noqa: E402
 from llm_answer import answer_with_fallback, providers  # noqa: E402
 from retrieve import NOT_FOUND, retrieve  # noqa: E402
@@ -35,6 +37,11 @@ def type_label(rule_type: str) -> str:
 def show_basic_answer(results) -> None:
     """The no-LLM answer: the best rule, or the best quoted sentence, with its citation."""
     best = results[0]
+    if best.kind == "correction":
+        st.markdown(f"**Staff correction {best.metadata['correction_id']}** · {best.metadata['date']}")
+        st.info(best.text)
+        st.caption(f"Given for the question: \"{best.metadata['question']}\"")
+        return
     if best.kind == "rule":
         st.markdown(f"**{best.metadata['rule_id']}** · {type_label(best.metadata['rule_type'])}")
         st.info(best.text)
@@ -47,10 +54,13 @@ def show_basic_answer(results) -> None:
 def show_sources(results, show_scores: bool) -> None:
     st.subheader("Sources")
     for n, r in enumerate(results, start=1):
-        kind = "Rule" if r.kind == "rule" else "Document"
+        kind = {"rule": "Rule", "doc": "Document", "correction": "Staff correction"}[r.kind]
         score = f" · similarity {r.similarity:.2f}" if show_scores else ""
         with st.expander(f"{n}. {kind}: {r.citation}{score}"):
-            if r.kind == "rule":
+            if r.kind == "correction":
+                st.markdown(f"Given for the question: \"{r.metadata['question']}\"")
+                st.write(r.text)
+            elif r.kind == "rule":
                 st.markdown(f"Type: {type_label(r.metadata['rule_type'])} · "
                             f"Section: {r.metadata['source_section']}")
                 st.write(r.text)
@@ -89,23 +99,65 @@ with st.form("ask"):
     question = st.text_input("Question", placeholder="e.g. Can we fit 60 mm lift blocks without a cert?")
     asked = st.form_submit_button("Ask")
 
-if asked and question.strip():
-    with st.spinner("Searching..."):
-        results = retrieve(question.strip(), domain, collections())
-    st.session_state["last"] = {"question": question.strip(), "domain": domain, "results": results}
+def show_feedback(last: dict) -> None:
+    """Correct / Wrong buttons under the answer, writing to corrections.yaml."""
+    st.divider()
+    if last.get("saved"):
+        st.success(last["saved"])
+        return
+    st.caption("Was this answer right?")
+    left, right, _ = st.columns([1, 1, 4])
+    if left.button("Correct", use_container_width=True):
+        cid = append_correction("confirmed", last["domain"], last["question"],
+                                last["cited"], last["shown"])
+        last["saved"] = f"Thanks. Logged as confirmed ({cid})."
+        st.rerun()
+    if right.button("Wrong", use_container_width=True):
+        last["correcting"] = True
+    if last.get("correcting"):
+        with st.form("correction"):
+            fix = st.text_area("What is the right answer? Include where it comes from if you know.")
+            if st.form_submit_button("Save correction"):
+                if fix.strip():
+                    cid = append_correction("corrected", last["domain"], last["question"],
+                                            last["cited"], fix)
+                    last["saved"] = (f"Saved as {cid}. It will be used for this question "
+                                     "after the next `python src/ingest.py`.")
+                    last["correcting"] = False
+                    st.rerun()
+                else:
+                    st.warning("Type the right answer first.")
 
+
+if asked and question.strip():
+    q = question.strip()
+    with st.spinner("Searching..."):
+        results = retrieve(q, domain, collections())
+    answer, notes = None, []
+    if results and use_llm:
+        with st.spinner("Asking the LLM..."):
+            answer, notes = answer_with_fallback(q, results)
+    # Keep the result between reruns, so the feedback buttons can act on it.
+    st.session_state["last"] = {
+        "question": q, "domain": domain, "results": results,
+        "answer": answer, "notes": notes, "used_llm": use_llm,
+        "cited": results[0].source_key if results else "",
+        "shown": answer if answer is not None else (results[0].quote or results[0].text if results else NOT_FOUND),
+    }
+elif asked:
+    st.warning("Type a question first.")
+
+last = st.session_state.get("last")
+if last:
+    results, answer = last["results"], last["answer"]
     st.subheader("Answer")
     if not results:
         st.warning(NOT_FOUND)
     else:
-        answer = None
-        if use_llm:
-            with st.spinner("Asking the LLM..."):
-                answer, notes = answer_with_fallback(question.strip(), results)
-            for note in notes:
-                st.caption(f"Note: {note}")
-            if answer is None:
-                st.caption("No LLM could answer, so this is the quoted answer from local search.")
+        for note in last["notes"]:
+            st.caption(f"Note: {note}")
+        if last["used_llm"] and answer is None:
+            st.caption("No LLM could answer, so this is the quoted answer from local search.")
         if answer == NOT_FOUND:
             st.warning(NOT_FOUND)
         elif answer is not None:
@@ -113,5 +165,4 @@ if asked and question.strip():
         else:
             show_basic_answer(results)
         show_sources(results, show_scores)
-elif asked:
-    st.warning("Type a question first.")
+    show_feedback(last)

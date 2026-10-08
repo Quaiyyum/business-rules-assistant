@@ -1,0 +1,29 @@
+# Staff feedback written by the app (src/app.py). Edit or delete entries by hand
+# if needed, then run `python src/ingest.py` so corrections take effect.
+#
+# status: confirmed  the answer shown was right (a log; not used for retrieval)
+# status: corrected  the answer shown was wrong; `answer` is the staff-written fix
+
+- id: C001
+  date: '2026-10-08'
+  status: confirmed
+  domain: light_vehicle
+  question: A customer wants 60 mm lift blocks under the rear leaf springs of his ute. Can
+    we fit them without a cert
+  cited_source: LVV_001
+  answer: Blocks for leaf springs, used to raise or lower ride height, do not require LVV
+    certification provided the leaf spring suspension has not been raised by any other means
+    and the blocks are securely fitted, constructed from metal, designed for the purpose,
+    firmly seated over not less than the OE seat area, not more than 50 mm in height, and
+    located using the same method as original.
+
+- id: C002
+  date: '2026-10-08'
+  status: corrected
+  domain: light_vehicle
+  question: '"I''m carrying a ladder that hangs 1.2 m out the back of the ute. Do I need to
+    put anything on it?"'
+  cited_source: nzta_safe_loading_towing_light.pdf:17
+  answer: 'Yes. A load sticking out more than 1 metre past the back needs a warning device:
+    in daylight a flag or hazard panel at least 400 mm by 300 mm, at night a light. Source:
+    NZTA Guide to safe loading and towing, PDF p.14 (TOW_007).'
