@@ -49,7 +49,9 @@ The knowledge is in YAML files, so changing what the assistant says means editin
 |---|---|
 | ![Before](docs/screenshots/before.png) | ![After](docs/screenshots/after.png) |
 
-The same applies to corrections: a staff member marks an answer wrong and types the right one, it is saved to `corrections/corrections.yaml`, and after the next ingest the corrected answer is returned for that question, labelled as a staff correction.
+The same applies to corrections: a staff member marks an answer wrong and types the right one, it is saved to `corrections/corrections.yaml`, and after the next ingest the corrected answer is returned for that question, labelled as a staff correction. Below, the ladder question (which the search answers wrongly on its own) now returns staff correction C002:
+
+![A staff correction returned as the answer](docs/screenshots/correction.png)
 
 ## 4. The interface
 
