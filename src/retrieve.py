@@ -190,11 +190,15 @@ def main() -> int:
     args = parser.parse_args()
 
     results = retrieve(args.question, args.domain)
+    answer = None
     if args.llm:
-        from llm_answer import llm_answer
-        print(llm_answer(args.question, results))
-    else:
-        print(basic_answer(results, show_context=args.context))
+        from llm_answer import answer_with_fallback
+        answer, notes = answer_with_fallback(args.question, results)
+        for note in notes:
+            print(f"Note: {note}")
+        if answer is None:
+            print("Note: no LLM could answer, so this is the quoted answer from local search (no AI wording).\n")
+    print(answer if answer is not None else basic_answer(results, show_context=args.context))
 
     print("\nRetrieved:")
     for r in results:
